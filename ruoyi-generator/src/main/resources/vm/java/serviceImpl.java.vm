@@ -1,0 +1,80 @@
+package ${packageName}.service.impl;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.exception.ServiceException;
+import java.util.List;
+import java.util.Optional;
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime' || $column.javaField == 'updateTime')
+import com.ruoyi.common.utils.DateUtils;
+#break
+#end
+#end
+import com.ruoyi.common.utils.SecurityUtils;
+import com.ruoyi.common.utils.bean.BeanUtils;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ${packageName}.mapper.${ClassName}Mapper;
+import ${packageName}.domain.dto.form.${ClassName}Form;
+import ${packageName}.domain.po.${ClassName};
+import ${packageName}.service.I${ClassName}Service;
+
+/**
+ * ${functionName}Service业务层处理
+ * 
+ * @author ${author}
+ */
+@Service
+public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${ClassName}> implements I${ClassName}Service {
+
+    @Override
+    public ${ClassName} getInfo(${pkColumn.javaType} ${pkColumn.javaField}) {
+        return getById(${pkColumn.javaField});
+    }
+
+    @Override
+    public List<${ClassName}> customList(${ClassName}Form req) {
+        req = Optional.ofNullable(req).orElse(new ${ClassName}Form());
+        LambdaQueryWrapper<${ClassName}> qw = new LambdaQueryWrapper<>();
+        ${ClassName} paramEntity = new ${ClassName}();
+        BeanUtils.copyProperties(req, paramEntity);
+        qw.setEntity(paramEntity);
+        return list(qw);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public ${ClassName} customInsert(${ClassName} req) {
+#foreach ($column in $columns)
+#if($column.javaField == 'createTime')
+        req.setCreateTime(DateUtils.getNowDate());
+#elseif($column.javaField == 'createBy')
+        req.setCreateBy(SecurityUtils.getUsername());
+#end
+#end
+        save(req);
+        return req;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public ${ClassName} customUpdate(${ClassName} req) {
+#foreach ($column in $columns)
+#if($column.javaField == 'updateTime')
+        req.setUpdateTime(DateUtils.getNowDate());
+#elseif($column.javaField == 'updateBy')
+        req.setUpdateBy(SecurityUtils.getUsername());
+#end
+#end
+        updateById(req);
+        return req;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Boolean customRemoveByIds(List<${pkColumn.javaType}> ${pkColumn.javaField}s) {
+        return removeByIds(${pkColumn.javaField}s);
+    }
+
+}

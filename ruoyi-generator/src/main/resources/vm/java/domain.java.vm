@@ -1,0 +1,115 @@
+package ${packageName}.domain.po;
+
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.SqlCondition;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.ruoyi.common.annotation.Excel;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+#foreach ($import in $importList)
+import ${import};
+#end
+#if($table.crud || $table.sub)
+#if($baseEntityPath)
+import ${baseEntityPath};
+#else
+import com.ruoyi.common.core.domain.BaseEntity;
+#end
+#elseif($table.tree)
+import com.ruoyi.common.core.domain.TreeEntity;
+#end
+#if($table.crud || $table.sub)
+    #set($Entity=${baseEntity})
+#elseif($table.tree)
+    #set($Entity="TreeEntity")
+#end
+
+/**
+ * ${functionName}对象 ${tableName}
+ *
+ * @author ${author}
+ */
+@ApiModel(value = "${functionName}")
+@TableName("${tableName}")
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class ${ClassName} extends ${Entity} {
+
+    @TableField(exist = false)
+    private static final long serialVersionUID = 1L;
+
+#foreach ($column in $columns)
+#if(!$table.isSuperColumn($column.javaField))
+#if($column.javaType == 'Date')
+#if($column.columnType == 'date')
+#if($column.isRequired)
+    @ApiModelProperty(value = "${column.columnComment} 格式：${dateFormatStr}", required = true)
+#else
+    @ApiModelProperty(value = "${column.columnComment} 格式：${dateFormatStr}")
+#end
+    @JsonFormat(pattern = "$dateFormatStr")
+    @DateTimeFormat(pattern = "$dateFormatStr")
+#else
+#if($column.isRequired)
+    @ApiModelProperty(value = "${column.columnComment} 格式：${datetimeFormatStr}", required = true)
+#else
+    @ApiModelProperty(value = "${column.columnComment} 格式：${datetimeFormatStr}")
+#end
+    @JsonFormat(pattern = "$datetimeFormatStr")
+    @DateTimeFormat(pattern = "$datetimeFormatStr")
+#end
+#else
+#if($column.isRequired())
+    @ApiModelProperty(value = "${column.columnComment}", required = true)
+#else
+    @ApiModelProperty(value = "${column.columnComment}")
+#end
+#end
+#if($column.isPk())
+#if($column.isIncrement())
+    @TableId(type = IdType.AUTO)
+#else
+    @TableId(type = IdType.ASSIGN_ID)
+#end
+#end
+#if($column.QueryType == "NE")
+    @TableField(condition = SqlCondition.NOT_EQUAL)
+#elseif($column.QueryType == "LIKE")
+    @TableField(condition = SqlCondition.LIKE)
+#end
+#if($column.list)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($parentheseIndex != -1)
+    @Excel(name = "${comment}", readConverterExp = "$column.readConverterExp()")
+#elseif($column.javaType == 'Date')
+#if($column.columnType == 'date')
+    @Excel(name = "${comment}", dateFormat = "$dateFormatStr")
+#else
+    @Excel(name = "${comment}", dateFormat = "$datetimeFormatStr")
+#end
+#else
+    @Excel(name = "${comment}")
+#end
+#end
+    private $column.javaType $column.javaField;
+
+#end
+#end
+#if($table.sub)
+    @ApiModelProperty("$table.subTable.functionName")
+    @TableField(exist = false)
+    private List<${subClassName}> ${subclassName}List;
+
+#end
+}

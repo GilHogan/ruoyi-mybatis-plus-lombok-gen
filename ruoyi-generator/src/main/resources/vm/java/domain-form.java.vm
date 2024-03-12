@@ -1,0 +1,43 @@
+package ${packageName}.domain.dto.form;
+
+import com.ruoyi.common.web.form.BasePageFrom;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+#foreach ($import in $queryFormImportList)
+import ${import};
+#end
+
+/**
+ * ${functionName}查询参数对象
+ * 
+ * @author ${author}
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+public class ${ClassName}Form extends BasePageFrom {
+
+    private static final long serialVersionUID = 1L;
+
+#foreach ($column in $columns)
+#if($column.query)
+#if($column.javaType == 'Date')
+#if($column.columnType == 'date')
+    @ApiModelProperty(value = "${column.columnComment} 格式：${dateFormatStr}")
+    @JsonFormat(pattern = "$dateFormatStr")
+    @DateTimeFormat(pattern = "$dateFormatStr")
+#else
+    @ApiModelProperty(value = "${column.columnComment} 格式：${datetimeFormatStr}")
+    @JsonFormat(pattern = "$datetimeFormatStr")
+    @DateTimeFormat(pattern = "$datetimeFormatStr")
+#end
+#else
+    @ApiModelProperty(value = "${column.columnComment}")
+#end
+    private $column.javaType $column.javaField;
+
+#end
+#end
+}
