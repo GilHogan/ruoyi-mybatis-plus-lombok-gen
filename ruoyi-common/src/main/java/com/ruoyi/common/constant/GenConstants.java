@@ -91,6 +91,9 @@ public class GenConstants
     /** 字符串类型 */
     public static final String TYPE_STRING = "String";
 
+    /** 布尔类型 */
+    public static final String TYPE_BOOLEAN = "Boolean";
+
     /** 整型 */
     public static final String TYPE_INTEGER = "Integer";
 

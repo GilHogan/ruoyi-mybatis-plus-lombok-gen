@@ -32,7 +32,7 @@ public interface I${ClassName}Service extends IService<${ClassName}> {
     /**
      * 新增${functionName}
      *
-     * @param req ${functionName}
+     * @param req ${functionName}参数
      * @return ${functionName}
      */
      ${ClassName} customInsert(${ClassName} req);
@@ -40,7 +40,7 @@ public interface I${ClassName}Service extends IService<${ClassName}> {
     /**
      * 修改${functionName}
      *
-     * @param req ${functionName}
+     * @param req ${functionName}参数
      * @return ${functionName}
      */
     ${ClassName} customUpdate(${ClassName} req);

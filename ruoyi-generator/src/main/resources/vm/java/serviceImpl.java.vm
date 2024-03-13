@@ -2,7 +2,6 @@ package ${packageName}.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ruoyi.common.exception.ServiceException;
 import java.util.List;
 import java.util.Optional;
 #foreach ($column in $columns)
